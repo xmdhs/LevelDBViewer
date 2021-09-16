@@ -17,7 +17,7 @@
                 p.innerText = v.value
                 t.appendChild(p)
                 let leveldb = false;
-                t.addEventListener("click", async () => {
+                p.addEventListener("click", async () => {
                     if (leveldb) {
                         t.removeChild(t.querySelector("blockquote"))
                         leveldb = false
