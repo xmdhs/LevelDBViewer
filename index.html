@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <title>leveldb viewer</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/xmdhs/searchqanda/style.css">
+    <script>
+        (async () => {
+            let r = await fetch("./keys")
+            let data = await r.json()
+            for (const v of data) {
+                let t = document.createElement("div")
+                let p = document.createElement("p")
+                p.innerText = v.value
+                t.appendChild(p)
+                let leveldb = false;
+                t.addEventListener("click", async () => {
+                    if (leveldb) {
+                        t.removeChild(t.querySelector("blockquote"))
+                        leveldb = false
+                        return;
+                    } else {
+                        leveldb = true
+                        let q = new URLSearchParams();
+                        q.set("key", v.base64)
+                        let r = await fetch(`./getvalue?${q.toString()}`)
+                        let data = await r.json()
+                        let b = document.createElement("blockquote")
+                        b.innerHTML = htmlEncode(data.value) + "<br>key: " + htmlEncode(v.base64) + "<br>value: " + htmlEncode(data.base64)
+                        t.appendChild(b)
+                    }
+                })
+                document.querySelector("#result").appendChild(t)
+            }
+        })()
+
+        function htmlEncode(str) {
+            var ele = document.createElement('span');
+            ele.appendChild(document.createTextNode(str));
+            return ele.innerHTML;
+        }
+    </script>
+</head>
+
+<body>
+    <div class="container-lg px-3 my-5 markdown-body">
+        <h1>leveldb viewer</h1>
+        <div id="result">
+
+        </div>
+    </div>
+</body>
+
+</html>
